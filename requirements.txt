@@ -1,3 +1,9 @@
 genkit-plugin-google-genai
 genkit-plugin-firebase
 pillow
+twilio
+google-cloud-firestore
+google-cloud-aiplatform
+firebase-admin
+google-cloud-speech
+google-cloud-pubsub
