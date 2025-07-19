@@ -1,0 +1,2 @@
+genkit-plugin-google-genai
+pillow
