@@ -1,7 +1,7 @@
 # 🤖 kisanBot
 
 ![Python Version](https://img.shields.io/badge/python-3.12-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 
 An intelligent assistant for farmers, providing quick access to information on disease diagnosis, market analysis, and more. This bot leverages the Google AI platform to deliver accurate and timely support.
 
