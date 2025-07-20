@@ -1,0 +1,7 @@
+from ..whatsapp.client import AsyncWhatsAppClient
+
+whatsapp_client = AsyncWhatsAppClient(
+    phone_number_id='779353605250568',
+    bearer_token='EAAJQPoXkZCoMBPCkQmPZCOuzsctAND4Dcv1KytFJMVK4xrdNuQySRZCdz3HDNcVyZB3pZAvJ6ZB8jqAWPZAIKuzYWsQxsRZCoeyC7uTr87hlzULLHJEJ7zLiuAjEEveJxKmee26skLz9ouAzIjB6IIi8iZBSZBrCrJviVXkahgsmO6pYFuJRACrNvrjIFfawxtgtu3prHL1zb0ZAq4YZCzHBCcxrVzm5pLaWbiZCpb83KqfElMt2HEbpNakMpBhZBVkwZDZD',
+    reuse_client=True
+)

@@ -7,3 +7,14 @@ google-cloud-aiplatform
 firebase-admin
 google-cloud-speech
 google-cloud-pubsub
+fastapi
+
+
+
+# offline:
+
+# 1. whatapp client [image, textt, audio]
+# 2. speech to text 
+# https://8030ec2e9ff7.ngrok-free.app
+# 3. genkit client & multilingual support
+# 4. text embedding & datastore client (firestore/vectordb)
