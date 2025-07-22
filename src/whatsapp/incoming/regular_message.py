@@ -21,6 +21,12 @@ class Audio(BaseModel):
     sha256: Optional[str] = Field(None, description="SHA-256 hash of the audio file")
     voice: Optional[bool] = Field(None, description="Indicates if the audio is a voice note")
 
+class Image(BaseModel):
+    id: Optional[str] = Field(None, description="ID of the image file")
+    mime_type: Optional[str] = Field(None, description="MIME type of the image file")
+    sha256: Optional[str] = Field(None, description="SHA-256 hash of the image file")
+    caption: Optional[str] = Field(None, description="Caption for the image")
+
 class Message(BaseModel):
     context: Optional[Context] = Field(None, description="Context of the message, if it is a reply")
     from_: Optional[str] = Field(None, alias="from", description="WhatsApp ID of the sender")
@@ -29,6 +35,7 @@ class Message(BaseModel):
     type: Optional[str] = Field(None, description="Type of the message (e.g., text, audio)")
     text: Optional[TextMessage] = Field(None, description="Details of a text message")
     audio: Optional[Audio] = Field(None, description="Details of an audio message")
+    image: Optional[Image] = Field(None, description="Details of an image message")
 
 class Metadata(BaseModel):
     display_phone_number: Optional[str] = Field(None, description="The phone number displayed to users")

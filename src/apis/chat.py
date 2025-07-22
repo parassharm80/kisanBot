@@ -1,13 +1,15 @@
 import logging
 import json
-import byoeb.chat_app.configuration.dependency_setup as dependency_setup
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
+from ..whatsapp.validate_message import validate_whatsapp_message
+from ..whatsapp.convert_message import convert_whatsapp_to_bot_message
+from ..chat_app.dependency_setup import publisher, topic_path
+
 
 CHAT_API_NAME = 'chat_api'
 chat_apis_router = APIRouter()
 _logger = logging.getLogger(CHAT_API_NAME)
-
 
 
 @chat_apis_router.post("/receive")
@@ -17,10 +19,18 @@ async def receive(request: Request):
     """
     body = await request.json()
     # print("Received the request: ", json.dumps(body))
-    _logger.info(f"Received the request: {json.dumps(body)}")
-    response = await dependency_setup.message_producer_handler.handle(body)
-    _logger.info(f"Response: {response}")
+    print(f"Received the request: {json.dumps(body)}")
+
+    _, message_type = validate_whatsapp_message(body)
+    bot_message  = convert_whatsapp_to_bot_message(body, message_type)
+    data = bot_message.model_dump_json()
+    data = data.encode("utf-8")
+    future = publisher.publish(topic_path, data)
+    print(f"Published message ID (Service Account): {future.result()}")
+    print(f"Message type: {message_type}")
+    print(f"bot_message: {bot_message.model_dump_json(indent=2)}")
     return JSONResponse(
-        content=response.message,
-        status_code=response.status_code
+        content='Done',
+        status_code=200
     )
+

@@ -6,6 +6,8 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from ..apis.channel_register import register_apis_router
 from ..apis.health import health_apis_router
+from ..apis.chat import chat_apis_router
+
 
 
 asyncio.get_event_loop().set_debug(True)
@@ -20,7 +22,9 @@ def create_app():
     app = FastAPI(lifespan=lifespan)
     app.include_router(register_apis_router)
     app.include_router(health_apis_router)
+    app.include_router(chat_apis_router)
     return app
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -33,13 +37,19 @@ async def lifespan(app: FastAPI):
     # )
     # await message_consumer.initialize()
     # asyncio.create_task(message_consumer.listen())
+    #subscriber
+    from .listner import listen_for_messages, cancel
+
+    listen_for_messages()
     yield
+    cancel()
     # await channel_client_factory.close()
     # await message_consumer.close()
     # await queue_producer_factory.close()
     print("Closed all clients.")
 
 app = create_app()
+
 if __name__ == '__main__':
     uvicorn.run(
         app,
