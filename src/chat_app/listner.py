@@ -1,5 +1,9 @@
 from google.cloud import pubsub_v1
 from google.oauth2 import service_account
+from src.models.bot.message_context import BotMessageContext
+from src.models.bot.user import User
+from ..services.user_flow.message_handle import handle_user_message
+import json
 
 # Replace with the actual path to your service account key file
 SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
@@ -17,7 +21,11 @@ subscription_id = "bot_messages-sub"
 subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
+    import asyncio
     print(f"Received message (Service Account): {message.data.decode('utf-8')}")
+    json_message = json.loads(message.data.decode('utf-8'))
+    user_message = BotMessageContext.model_validate(json_message)
+    asyncio.run(handle_user_message(user_message))
     message.ack()
 
 # # Set the flow control to manage the ack deadline

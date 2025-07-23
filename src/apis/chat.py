@@ -22,6 +22,11 @@ async def receive(request: Request):
     print(f"Received the request: {json.dumps(body)}")
 
     _, message_type = validate_whatsapp_message(body)
+    if message_type == "status":
+        return JSONResponse(
+            content='Done',
+            status_code=200
+        )
     bot_message  = convert_whatsapp_to_bot_message(body, message_type)
     data = bot_message.model_dump_json()
     data = data.encode("utf-8")
