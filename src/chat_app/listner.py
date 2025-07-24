@@ -1,54 +1,97 @@
+# listener.py
+
 from google.cloud import pubsub_v1
 from google.oauth2 import service_account
 from src.models.bot.message_context import BotMessageContext
-from src.models.bot.user import User
-from ..services.user_flow.message_handle import handle_user_message
 import json
+import asyncio
+
+from src.services.user_flow.message_handle import handle_user_message
+import traceback
+
+
+# This will hold the main event loop from the FastAPI app
+main_loop = None
 
 # Replace with the actual path to your service account key file
 SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
 consumer = None
-# projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
 credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
 project_id = "serene-flare-466616-m5"
 topic_id = "bot_messages"
 
-
 subscriber = pubsub_v1.SubscriberClient(credentials=credentials)
-
 subscription_id = "bot_messages-sub"
 subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
-def callback(message: pubsub_v1.subscriber.message.Message) -> None:
-    import asyncio
-    print(f"Received message (Service Account): {message.data.decode('utf-8')}")
-    json_message = json.loads(message.data.decode('utf-8'))
-    user_message = BotMessageContext.model_validate(json_message)
-    asyncio.run(handle_user_message(user_message))
-    message.ack()
 
-# # Set the flow control to manage the ack deadline
-# # We want the client to keep messages leased for up to 120 seconds.
-# flow_control = pubsub_v1.types.FlowControl(
-#     max_duration_per_lease_extension=120,
-# )
+async def _async_process_message(message: pubsub_v1.subscriber.message.Message) -> None:
+    """
+    ✨ FIX: This is the original async logic, now in its own function.
+    It will be scheduled to run on the main event loop.
+    """
+    try:
+        print(f"Received message ID: {message.message_id}")
+        data = message.data.decode('utf-8')
+        print(f"Data: {data}")
+        
+        json_message = json.loads(data)
+        user_message = BotMessageContext.model_validate(json_message)
 
-def listen_for_messages():
-    print(f"Listening for messages on {subscription_path} with a 2-minute ack deadline extension...")
+        # This await now happens correctly on the main event loop
+        await handle_user_message(user_message)
 
-    # Pass the flow_control settings to the subscribe method
+        message.ack()
+        print(f"Acknowledged message ID: {message.message_id}")
+
+    except Exception as e:
+        print(f"Error processing message {message.message_id}: {e}")
+        traceback.print_exc()
+        message.nack()
+
+
+def pubsub_callback(message: pubsub_v1.subscriber.message.Message) -> None:
+    """
+    ✨ FIX: A standard synchronous callback.
+    It safely schedules the async processing on the main event loop.
+    """
+    if not main_loop:
+        print("ERROR: Main event loop is not set. Cannot process message.")
+        # Nacking is a good default action if the app is not ready
+        message.nack()
+        return
+
+    # Schedule the coroutine to be executed on the main event loop
+    asyncio.run_coroutine_threadsafe(_async_process_message(message), main_loop)
+
+
+async def listen_for_messages():
+    """
+    Starts the Pub/Sub subscriber. This function itself remains async.
+    """
+    print(f"Listening for messages on {subscription_path}...")
     streaming_pull_future = subscriber.subscribe(
-        subscription_path, 
-        callback=callback, 
+        subscription_path,
+        callback=pubsub_callback,  # ✨ FIX: Pass the new synchronous callback
     )
 
-        # result() will block indefinitely, waiting for messages.
     global consumer
     consumer = streaming_pull_future
+    try:
+        await streaming_pull_future
+    except asyncio.CancelledError:
+        print("Subscriber task cancelled.")
+        streaming_pull_future.cancel()
 
 
-def cancel():
-    consumer.cancel()  # Stop consuming messages
-    consumer.result()  # Wait for the cancellation to complete
+async def cancel():
+    if consumer:
+        consumer.cancel()
+        # The result() call on a cancelled future raises CancelledError,
+        # so we wrap it in a try/except block.
+        try:
+            consumer.result()
+        except asyncio.CancelledError:
+            pass # Cancellation is expected
     subscriber.close()
