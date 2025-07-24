@@ -36,7 +36,6 @@ def has_interactive_list_additional_info(
 def has_interactive_button_additional_info(
     bot_message: BotMessageContext
 ):
-    print("bot_message ",bot_message.message_context.additional_info)
     return (
         bot_message.message_context.additional_info is not None and
         "button_titles" in bot_message.message_context.additional_info

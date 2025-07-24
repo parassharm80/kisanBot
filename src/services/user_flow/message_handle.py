@@ -1,3 +1,4 @@
+from src.services.text_to_speech import async_text_to_speech
 from ...models.bot.message_context import (
     BotMessageContext,
     MessageContext,
@@ -11,6 +12,9 @@ from ...utils import wa_utils as wa_utils
 from ...chat_app.dependency_setup import whatsapp_client
 import asyncio
 
+
+
+
 async def generate_context(
     message: BotMessageContext,
 ): 
@@ -19,6 +23,13 @@ async def generate_context(
             constants.DESCRIPTION: 'description',
             constants.ROW_TEXTS: user_lang_related_questions
         }
+    source_text = 'जय हिंद'
+    english_text = 'kaka in english'
+    translated_audio_message = await async_text_to_speech(source_text, 'hi-IN')
+    media_info = {
+        constants.DATA: translated_audio_message,
+        constants.MIME_TYPE: "audio/ogg",
+    }
     user_message = BotMessageContext(
         channel_type=message.channel_type,
         message_category='BOT_TO_USER_RESPONSE',
@@ -31,9 +42,10 @@ async def generate_context(
         ),
         message_context=MessageContext(
             message_type=MessageTypes.INTERACTIVE_LIST.value,
-            message_source_text='jai hind',
-            message_english_text='kaka in english',
+            message_source_text=source_text,
+            message_english_text=english_text,
             additional_info={
+                **media_info,
                 **interactive_list_additional_info
             }
         ),
@@ -61,11 +73,11 @@ async def send(user_message_context: BotMessageContext):
     user_requests = wa_utils.prepare_requests(user_message_context)
     user_message_copy = user_message_context.__deepcopy__()
     user_message_copy.reply_context = None
-    # user_requests_no_tag = wa_utils.prepare_requests(user_message_copy)
+    user_requests_no_tag = wa_utils.prepare_requests(user_message_copy)
     text_tag_message = user_requests[0]
-    # audio_no_tag_message = user_requests_no_tag[1]
+    audio_no_tag_message = user_requests_no_tag[1]
     response_text, message_id_text = await send_requests([text_tag_message])
-    # response_audio, message_id_audio = await send_requests([audio_no_tag_message])
+    response_audio, message_id_audio = await send_requests([audio_no_tag_message])
     responses = response_text
     message_ids = message_id_text
 

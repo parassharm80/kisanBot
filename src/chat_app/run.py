@@ -9,12 +9,14 @@ from contextlib import asynccontextmanager
 from ..apis.channel_register import register_apis_router
 from ..apis.health import health_apis_router
 from ..apis.chat import chat_apis_router
+from ..chat_app.dependency_setup import whatsapp_client
 
 # ✨ FIX: Import the listener module with an alias for clarity
 from . import listner as pubsub_listener
 
 # This global is not strictly necessary anymore but doesn't hurt
 subscriber_task = None
+
 
 asyncio.get_event_loop().set_debug(True)
 def create_app():
@@ -46,6 +48,8 @@ async def lifespan(app: FastAPI):
     subscriber_task = asyncio.create_task(pubsub_listener.listen_for_messages())
     
     yield
+
+    await whatsapp_client._close()
 
     # Cleanly shut down the subscriber task and client
     if subscriber_task:
