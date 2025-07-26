@@ -1,11 +1,21 @@
 from ..whatsapp.client import AsyncWhatsAppClient
 import os
 from google import auth
+from dotenv import load_dotenv
 
-
+# load environment variables from .env file
+current_dir = os.path.dirname(os.path.abspath(__file__))
+environment_path = os.path.join(current_dir, '..', 'keys.env')
+environment_path = os.path.normpath(environment_path)
+print(f"Loading environment variables from: {environment_path}")
+if os.path.exists(environment_path):
+    load_dotenv(environment_path)
+else:
+    print(f"Warning: Environment file not found at {environment_path}")
+    
 whatsapp_client = AsyncWhatsAppClient(
     phone_number_id='779353605250568',
-    bearer_token='EAAJQPoXkZCoMBPOiAbtkPfT0HW2E3UxHAYpZB47th3qLJXkbpQYEk3yoKCFwaqB3y8wwAZBelgFEZCUiZA0rPw6cRx60d6KD8egvWbbY1YJGpq4wQra7pjokoff6mtnJRhkGY7twKAFUcvwdeezoKEKeP4jVcvZAVxM557ZBTSmZBOJLbcEZAbEQ6Juc7I2POnq81ZA3A0Q88zZAgXUT69WEWU7Q67zjycv1487hjNrEZB8uzV4qzDHo85G55c9ciMXdGmEZD',
+    bearer_token=os.environ.get("WHATSAPP_AUTH_TOKEN"),
     reuse_client=True
 )
 
@@ -25,7 +35,6 @@ else:
 
 
 # Replace with the actual path to your service account key file
-
 
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
 
