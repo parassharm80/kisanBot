@@ -53,22 +53,21 @@ topic_id = "bot_messages"
 publisher = pubsub_v1.PublisherClient(credentials=credentials)
 topic_path = publisher.topic_path(project_id, topic_id)
 
+from google import genai
+# orchestrator model
+orch_model = genai.Client(api_key=API_KEY)
+
 # speech to text gemini client
-import google.generativeai as genai
-genai.configure(api_key=API_KEY)
-speech_model = genai.GenerativeModel('gemini-2.5-flash')
+speech_model = genai.Client(api_key=API_KEY)
 
 # image model
-image_model = genai.GenerativeModel('gemini-2.5-flash')
-
-# orchestrator model
-orch_model = genai.GenerativeModel('gemini-2.5-flash')
+image_model = genai.Client(api_key=API_KEY)
 
 # online model
-online_model = genai.GenerativeModel('gemini-2.5-flash')
+online_model = genai.Client(api_key=API_KEY)
 
 # offline model
-offline_model = genai.GenerativeModel('gemini-2.5-flash')
+offline_model = genai.Client(api_key=API_KEY)
 
 # Document db firestore
 from google.cloud import firestore

@@ -97,7 +97,11 @@ async def async_generate_text_from_image(
     ]
 
     # Send the request to the Gemini model asynchronously
-    response = await image_model.generate_content_async(contents)
+    response = await image_model.aio.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=contents
+    )
+
     print(f"response text: {response.text}")
     text_en, text_src = parse_xml(response.text)
     return text_en, text_src

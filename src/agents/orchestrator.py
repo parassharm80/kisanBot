@@ -44,7 +44,10 @@ async def agent_orchestrator(query: str):
 
     try:
         # Use the async version of the generate_content method
-        response = await orch_model.generate_content_async(classification_prompt)
+        response = await orch_model.aio.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=classification_prompt)
+
         classified_topic = response.text.strip()
         print(f"🧠 Classification result: {classified_topic}")
 

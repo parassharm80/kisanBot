@@ -1,6 +1,8 @@
 import base64
 import xml.etree.ElementTree as ET
 from src.chat_app.dependency_setup import online_model
+import google.generativeai as genai
+from google.genai import types
 
 def generate_prompt(language_code: str, src_text: str = None) -> str:
     instructions = f"""
@@ -53,7 +55,22 @@ async def async_generate_online(
             }
         ]
     }
-    response = await online_model.generate_content_async(contents)
+    # Define the grounding tool
+    grounding_tool = types.Tool(
+        google_search=types.GoogleSearch()
+    )
+
+    # Configure generation settings
+    config = types.GenerateContentConfig(
+        tools=[grounding_tool]
+    )
+
+    # Make the request
+    response = await online_model.aio.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
+        config=config,
+    )
     print(response.text)
     text_en, text_src = parse_xml(response.text)
     return text_en, text_src

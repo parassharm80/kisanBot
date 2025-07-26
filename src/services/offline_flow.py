@@ -44,18 +44,12 @@ async def async_generate_offline(
             return None, None
     prompt = generate_prompt(language_code, src_text)
     print(f"Generated prompt: {prompt}")
-    # Corrected structure for the 'contents' payload
-    contents = [
-        {
-            "parts": [
-                {
-                    "text": prompt
-                }
-            ]
-        }
-    ]
 
-    response = await offline_model.generate_content_async(contents)
+    response = await offline_model.aio.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
     print(response.text)
     text_en, text_src = parse_xml(response.text)
     return text_en, text_src

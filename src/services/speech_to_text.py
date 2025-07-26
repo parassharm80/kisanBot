@@ -122,7 +122,10 @@ async def async_transcribe_ogg_bytes_gemini(audio_bytes: bytes, language_code: s
     ]
 
     # Send the request to the Gemini model asynchronously
-    response = await speech_model.generate_content_async(contents)
+    response = await speech_model.aio.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=contents
+    )
     print(response.text)
     text_en, text_src = parse_transcripts_xml(response.text)
 
