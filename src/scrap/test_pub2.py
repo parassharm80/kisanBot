@@ -4,9 +4,9 @@ import time
 import os
 from google import auth
 
+API_KEY = os.environ.get("API_KEY", "")
 if os.environ.get("ENV") == "local":
     SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
-    API_KEY = os.environ.get("API_KEY")
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
     project_id = os.environ.get("PROJECT_ID")

@@ -33,11 +33,10 @@ async def async_transcribe_ogg_bytes_stt(audio_bytes: bytes, language_code: str)
     if not stt_client:
         print("Initializing Speech-to-Text client...")
 
-
+        API_KEY = os.environ.get("API_KEY", "")
         credentials, project_id = "", ""
         if os.environ.get("ENV") == "local":
             SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
-            API_KEY = os.environ.get("API_KEY")
             credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
             project_id = os.environ.get("PROJECT_ID")
