@@ -8,9 +8,9 @@ def generate_prompt(language_code: str, src_text: str = None) -> str:
     1. Check if the given image is of a crop.
     """.strip()
 
-    non_crop_instruction = """
+    non_crop_instruction = f"""
     3. If it is not a crop, simply respond with: "This is not a crop image."
-    4. Output the result in English and the given language code.
+    4. Output the result in English and the given source language code {language_code}.
     """.strip()
 
     output_structure = f"""

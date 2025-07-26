@@ -92,7 +92,7 @@ async def async_transcribe_ogg_bytes_gemini(audio_bytes: bytes, language_code: s
     
     prompt = f"""
     <instructions>
-    User might have asked this audio question in given source language code {language_code}. If it is not in it identify the language and generate a transcript of the speech in english as well as hindi.
+    User might have asked this audio question in given source language code {language_code}. If it is not in it identify the language and generate a transcript of the speech in english as well as source language code {language_code}.
     Give output in following structure:
     <OUTPUT_STRUCTURE>
     <transcript_en>Transcript in English</transcript_en>
