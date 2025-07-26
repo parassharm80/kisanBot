@@ -14,6 +14,7 @@ def generate_prompt(language_code: str, src_text: str = None) -> str:
     """.strip()
 
     output_structure = f"""
+    Follow below xml tagging for response. All tags as it is:
     <OUTPUT_STRUCTURE>
     <description_en>Response in English</description_en>
     <description_src>Response in {language_code}</description_src>

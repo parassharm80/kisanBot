@@ -58,34 +58,22 @@ async def async_transcribe_ogg_bytes_stt(audio_bytes: bytes, language_code: str)
 async def async_transcribe_ogg_bytes_gemini(audio_bytes: bytes, language_code: str) -> str:
 
     def parse_transcripts_xml(xml_string: str) -> tuple[str | None, str | None]:
-        """
-        Parses an XML-like string to extract text from <transcript_en> and 
-        <transcript_src> tags.
-
-        Args:
-            xml_string: The string containing the transcript tags.
-
-        Returns:
-            A tuple containing the text for (text_en, text_src). 
-            Returns None for a tag if it's not found.
-        """
         try:
-            # Wrap the string in a single root element to make it valid XML
-            # This makes the parser robust, ignoring anything outside the wrapper.
-            root = ET.fromstring(f"<root>{xml_string}</root>")
+            root = ET.fromstring(xml_string.strip())
 
-            # Find the element for the English transcript
-            en_element = root.find('transcript_en')
-            text_en = en_element.text if en_element is not None else None
+            # Find transcript_en and transcript_src anywhere in the tree
+            text_en_element = root.find(".//transcript_en")
+            text_src_element = root.find(".//transcript_src")
 
-            # Find the element for the source transcript
-            src_element = root.find('transcript_src')
-            text_src = src_element.text if src_element is not None else None
+            text_en = text_en_element.text if text_en_element is not None else None
+            text_src = text_src_element.text if text_src_element is not None else None
 
             return text_en, text_src
-
         except ET.ParseError as e:
-            print(f"Error parsing the string: {e}")
+            print(f"XML Parse Error: {e}")
+            return None, None
+        except Exception as e:
+            print(f"Unexpected error: {e}")
             return None, None
     # Base64 encode the audio bytes
     encoded_audio_data = base64.b64encode(audio_bytes).decode('utf-8')
@@ -93,12 +81,11 @@ async def async_transcribe_ogg_bytes_gemini(audio_bytes: bytes, language_code: s
     prompt = f"""
     <instructions>
     User might have asked this audio question in given source language code {language_code}. If it is not in it identify the language and generate a transcript of the speech in english as well as source language code {language_code}.
-    Give output in following structure:
+    Give the answer in English and the given source language code Follow below xml tagging response:
     <OUTPUT_STRUCTURE>
-    <transcript_en>Transcript in English</transcript_en>
-    <transcript_src>Transcript in Hindi</transcript_src>
-    </OUTPUT_STRUCTURE>. 
-    Don't give anything extra in output.
+    <transcript_en>Response in English</transcript_en>
+    <transcript_src>Response in {language_code}</transcript_src>
+    </OUTPUT_STRUCTURE>.
     </instructions>"""
 
     # Prepare the content for the Gemini model
