@@ -11,12 +11,13 @@ from google.cloud import pubsub_v1
 from google.oauth2 import service_account
 
 # Replace with the actual path to your service account key file
-SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
+# SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
 
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+# credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
-project_id = "serene-flare-466616-m5"
+
+# project_id = "serene-flare-466616-m5"
 topic_id = "bot_messages"
 # --- For Publisher ---
 publisher = pubsub_v1.PublisherClient(credentials=credentials)

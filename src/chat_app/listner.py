@@ -5,6 +5,7 @@ from google.oauth2 import service_account
 from src.models.bot.message_context import BotMessageContext
 import json
 import asyncio
+from google.auth import default
 
 from src.services.user_flow.message_handle import handle_user_message
 import traceback
@@ -14,11 +15,12 @@ import traceback
 main_loop = None
 
 # Replace with the actual path to your service account key file
-SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
+# SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
 consumer = None
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
-
-project_id = "serene-flare-466616-m5"
+# credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+#
+# project_id = "serene-flare-466616-m5"
+credentials, project_id = default()
 topic_id = "bot_messages"
 
 subscriber = pubsub_v1.SubscriberClient(credentials=credentials)

@@ -1,14 +1,17 @@
 from google.cloud import pubsub_v1
 from google.oauth2 import service_account
 import time
+from google.auth import default
 
 # Replace with the actual path to your service account key file
 SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
 
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+# credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
-project_id = "serene-flare-466616-m5"
+# project_id = "serene-flare-466616-m5"
+credentials, project_id = default()
+
 topic_id = "bot_messages"
 # topic_path = publisher.topic_path(project_id, topic_id)
 # # --- For Publisher ---
