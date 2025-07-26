@@ -18,7 +18,18 @@ whatsapp_client = AsyncWhatsAppClient(
     bearer_token=os.environ.get("WHATSAPP_AUTH_TOKEN"),
     reuse_client=True
 )
-
+def update_whatsapp(token: str):
+    """
+    Update the WhatsApp bearer token.
+    """
+    global whatsapp_client
+    whatsapp_client._close()
+    whatsapp_client = AsyncWhatsAppClient(
+        phone_number_id='779353605250568',
+        bearer_token=token,
+        reuse_client=True
+    )
+    
 #publisher
 from google.cloud import pubsub_v1
 from google.oauth2 import service_account

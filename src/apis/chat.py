@@ -5,7 +5,7 @@ from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
 from ..whatsapp.validate_message import validate_whatsapp_message
 from ..whatsapp.convert_message import convert_whatsapp_to_bot_message
-from ..chat_app.dependency_setup import publisher, topic_path
+from ..chat_app.dependency_setup import publisher, topic_path, update_whatsapp
 from src.services.databases.user_collection import get_user_data
 
 
@@ -43,6 +43,21 @@ async def receive(request: Request):
     print(f"Published message ID (Service Account): {future.result()}")
     print(f"Message type: {message_type}")
     print(f"bot_message: {bot_message.model_dump_json(indent=2)}")
+    return JSONResponse(
+        content='Done',
+        status_code=200
+    )
+    
+@chat_apis_router.post("/update_whatsapp_token")
+async def update_token(request: Request):
+    """
+    Update the WhatsApp bearer token.
+    """
+    body = await request.json()
+    token = body.get("token")
+    # print("Received the request: ", json.dumps(body))
+    print(f"Received the request: {json.dumps(body)}")
+    update_whatsapp(token)
     return JSONResponse(
         content='Done',
         status_code=200
