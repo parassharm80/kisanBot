@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import json
 from fastapi import APIRouter, Request, Query
@@ -5,6 +6,7 @@ from fastapi.responses import JSONResponse
 from ..whatsapp.validate_message import validate_whatsapp_message
 from ..whatsapp.convert_message import convert_whatsapp_to_bot_message
 from ..chat_app.dependency_setup import publisher, topic_path
+from src.services.databases.user_collection import get_user_data
 
 
 CHAT_API_NAME = 'chat_api'
@@ -28,6 +30,13 @@ async def receive(request: Request):
             status_code=200
         )
     bot_message  = convert_whatsapp_to_bot_message(body, message_type)
+    user_id=hashlib.md5(bot_message.user.phone_number_id.encode()).hexdigest()
+    bot_message.user = await get_user_data(user_id)
+    if bot_message.user is None:
+        return JSONResponse(
+            content='Done',
+            status_code=200
+        )
     data = bot_message.model_dump_json()
     data = data.encode("utf-8")
     future = publisher.publish(topic_path, data)

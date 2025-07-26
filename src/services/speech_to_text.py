@@ -5,8 +5,15 @@ from google.cloud import speech
 from google.oauth2 import service_account
 from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE, speech_model
 genai.configure(api_key='AIzaSyB3y8k32Rjw2A-EGRAWve3ZQxLTY9FwEHc')
+import os
+from google import auth
 
 stt_client = None
+language_dict = {
+    "en-IN": "en",
+    "hi-IN": "hi",
+    "kn-IN": "te",
+}
 async def async_transcribe_ogg_bytes_stt(audio_bytes: bytes, language_code: str) -> str:
     """
     Asynchronously transcribes audio bytes in Ogg format to text.
@@ -25,7 +32,18 @@ async def async_transcribe_ogg_bytes_stt(audio_bytes: bytes, language_code: str)
     global stt_client
     if not stt_client:
         print("Initializing Speech-to-Text client...")
-        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+
+
+        credentials, project_id = "", ""
+        if os.environ.get("ENV") == "local":
+            SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
+            API_KEY = os.environ.get("API_KEY")
+            credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+
+            project_id = os.environ.get("PROJECT_ID")
+
+        else:
+            credentials, project_id = auth.default()
         # global stt_client
         stt_client = speech.SpeechAsyncClient(credentials=credentials)
 

@@ -1,8 +1,11 @@
 from ..whatsapp.client import AsyncWhatsAppClient
+import os
+from google import auth
+
 
 whatsapp_client = AsyncWhatsAppClient(
     phone_number_id='779353605250568',
-    bearer_token='EAAJQPoXkZCoMBPCXOl3ZBkPQZAkj7ugl6ABuweFM9bk7qqOuU6kFs6lGjLmqo2MVmTeKDECSFDhPMO1ETiejAQlGLXEvWmOteSpBrNrikkZBVfRZClESWlBiIppxgDFZB0EoiZCr4Ds9Dw7GpcnP9vdcNtVZB2cpZA8UFTGaTyXV9QV5cB3Q48DMecnZAd9DcY5THZCdc8MiFi4HoxoP4OGIfX8HMlvDy07mopBPr2iet9w11MZCD3xFDlP8sZAviFosLFZCIZD',
+    bearer_token='EAAJQPoXkZCoMBPOiAbtkPfT0HW2E3UxHAYpZB47th3qLJXkbpQYEk3yoKCFwaqB3y8wwAZBelgFEZCUiZA0rPw6cRx60d6KD8egvWbbY1YJGpq4wQra7pjokoff6mtnJRhkGY7twKAFUcvwdeezoKEKeP4jVcvZAVxM557ZBTSmZBOJLbcEZAbEQ6Juc7I2POnq81ZA3A0Q88zZAgXUT69WEWU7Q67zjycv1487hjNrEZB8uzV4qzDHo85G55c9ciMXdGmEZD',
     reuse_client=True
 )
 
@@ -10,17 +13,22 @@ whatsapp_client = AsyncWhatsAppClient(
 from google.cloud import pubsub_v1
 from google.oauth2 import service_account
 
-# Replace with the actual path to your service account key file
-SERVICE_ACCOUNT_KEY_FILE = '/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json'
-API_KEY = 'AIzaSyB3y8k32Rjw2A-EGRAWve3ZQxLTY9FwEHc'
+if os.environ.get("ENV") == "local":
+    SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
+    API_KEY = os.environ.get("API_KEY")
+    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+
+    project_id = os.environ.get("PROJECT_ID")
+
+else:
+    credentials, project_id = auth.default()
+
+
 
 
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
-project_id = "serene-flare-466616-m5"
 topic_id = "bot_messages"
-# --- For Publisher ---
 publisher = pubsub_v1.PublisherClient(credentials=credentials)
 topic_path = publisher.topic_path(project_id, topic_id)
 
@@ -40,4 +48,9 @@ online_model = genai.GenerativeModel('gemini-2.5-flash')
 
 # offline model
 offline_model = genai.GenerativeModel('gemini-2.5-flash')
+
+# Document db firestore
+from google.cloud import firestore
+db = firestore.AsyncClient.from_service_account_json(SERVICE_ACCOUNT_KEY_FILE)
+message_collection = db.collection('messages')
 

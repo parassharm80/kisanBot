@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 from ..apis.channel_register import register_apis_router
 from ..apis.health import health_apis_router
 from ..apis.chat import chat_apis_router
-from ..chat_app.dependency_setup import whatsapp_client
+from ..chat_app.dependency_setup import whatsapp_client, db
 
 # ✨ FIX: Import the listener module with an alias for clarity
 from . import listner as pubsub_listener
@@ -50,6 +50,7 @@ async def lifespan(app: FastAPI):
     yield
 
     await whatsapp_client._close()
+    db.close()
 
     # Cleanly shut down the subscriber task and client
     if subscriber_task:

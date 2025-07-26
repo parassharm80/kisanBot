@@ -8,14 +8,24 @@ import asyncio
 from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
 from src.services.user_flow.message_handle import handle_user_message
 import traceback
+import os
+from google import auth
 
 
 # This will hold the main event loop from the FastAPI app
 main_loop = None
 consumer = None
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
-project_id = "serene-flare-466616-m5"
+
+if os.environ.get("ENV") == "local":
+    SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
+    API_KEY = os.environ.get("API_KEY")
+    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+
+    project_id = os.environ.get("PROJECT_ID")
+
+else:
+    credentials, project_id = auth.default()
 topic_id = "bot_messages"
 
 subscriber = pubsub_v1.SubscriberClient(credentials=credentials)
