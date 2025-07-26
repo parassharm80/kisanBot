@@ -13,19 +13,36 @@ if os.path.exists(environment_path):
     load_dotenv(environment_path)
 else:
     print(f"Warning: Environment file not found at {environment_path}")
-    
-whatsapp_client = AsyncWhatsAppClient(
-    phone_number_id='779353605250568',
-    bearer_token=os.environ.get("WHATSAPP_AUTH_TOKEN"),
-    reuse_client=True
-)
-def update_whatsapp(token: str):
+
+_whatsapp_client = None
+def get_whatsapp_client():
+    global _whatsapp_client
+    if _whatsapp_client is None:
+        _whatsapp_client = AsyncWhatsAppClient(
+            phone_number_id='779353605250568',
+            bearer_token=os.environ.get("WHATSAPP_AUTH_TOKEN"),
+            reuse_client=True
+        )
+    print(f"Current token {_whatsapp_client._bearer_token}")
+    return _whatsapp_client
+
+async def update_whatsapp(token: str):
     """
-    Update the WhatsApp bearer token.
+    Update the WhatsApp bearer token and reinitialize the client.
     """
-    global whatsapp_client
-    whatsapp_client._close()
-    whatsapp_client = AsyncWhatsAppClient(
+    global _whatsapp_client  # Clear the existing client
+    print(f"Updating WhatsApp bearer token to: {token}")
+    os.environ["WHATSAPP_AUTH_TOKEN"] = token
+
+    # Close old client if it exists
+    if _whatsapp_client is not None:
+        print("Closing existing WhatsApp client...")
+        await _whatsapp_client._close()
+        del _whatsapp_client
+        
+    _whatsapp_client = None  # Reset the client to None
+    # Create new client
+    _whatsapp_client = AsyncWhatsAppClient(
         phone_number_id='779353605250568',
         bearer_token=token,
         reuse_client=True

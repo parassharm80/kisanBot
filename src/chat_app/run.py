@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from src.apis.channel_register import register_apis_router
 from src.apis.health import health_apis_router
 from src.apis.chat import chat_apis_router
-from src.chat_app.dependency_setup import whatsapp_client, db
+from src.chat_app.dependency_setup import get_whatsapp_client, db
 from src.chat_app import listner as pubsub_listener
 
 
@@ -49,7 +49,7 @@ async def lifespan(app: FastAPI):
     
     yield
 
-    await whatsapp_client._close()
+    await get_whatsapp_client()._close()
     db.close()
 
     # Cleanly shut down the subscriber task and client
@@ -60,9 +60,16 @@ async def lifespan(app: FastAPI):
 
 app = create_app()
 
-if __name__ == '__main__' and os.environ.get('ENV') == 'local':
-    uvicorn.run(
-        app,
-        host="127.0.0.1",
-        port=8080
-    )
+if __name__ == '__main__':
+    if os.environ.get('ENV') == 'local':
+        uvicorn.run(
+            app,
+            host="127.0.0.1",
+            port=4000
+        )
+    else:
+        uvicorn.run(
+            app,
+            host="127.0.0.1",
+            port=8080
+        )

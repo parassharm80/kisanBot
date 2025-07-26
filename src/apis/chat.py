@@ -57,7 +57,7 @@ async def update_token(request: Request):
     token = body.get("token")
     # print("Received the request: ", json.dumps(body))
     print(f"Received the request: {json.dumps(body)}")
-    update_whatsapp(token)
+    await update_whatsapp(token)
     return JSONResponse(
         content='Done',
         status_code=200

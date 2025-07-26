@@ -13,7 +13,7 @@ from src.models.bot.message_context import (
 from src.models.bot.user import User
 from src.utils import constants
 from src.utils import wa_utils as wa_utils
-from src.chat_app.dependency_setup import whatsapp_client
+from src.chat_app.dependency_setup import get_whatsapp_client
 
 language_dict = {
     "en-IN": "en",
@@ -32,7 +32,7 @@ async def generate_context(
     english_text = None
     if message.message_context.message_type == MessageTypes.REGULAR_IMAGE.value:
         media_id = message.message_context.media_info.media_id
-        _, image_message, err = await whatsapp_client.adownload_media(media_id)
+        _, image_message, err = await get_whatsapp_client().adownload_media(media_id)
         source_text = message.message_context.message_source_text
         text_en, text_src = await async_generate_text_from_image(image_message.data, language_dict[message.user.user_language], source_text)
         source_text = text_src
@@ -46,7 +46,7 @@ async def generate_context(
         english_text = text_en
     elif message.message_context.message_type == MessageTypes.REGULAR_AUDIO.value:
         media_id = message.message_context.media_info.media_id
-        _, audio_message, err = await whatsapp_client.adownload_media(media_id)
+        _, audio_message, err = await get_whatsapp_client().adownload_media(media_id)
         if audio_message.data is None:
             print(f"Error downloading media with ID {media_id}: {err}")
         else:
@@ -94,7 +94,7 @@ async def send(user_message_context: BotMessageContext):
         tasks = []
         for request in requests:
             message_type = request["type"]
-            tasks.append(whatsapp_client.asend_batch_messages([request], message_type))
+            tasks.append(get_whatsapp_client().asend_batch_messages([request], message_type))
         results = await asyncio.gather(*tasks)
         responses = [response for result in results for response in result]
         message_ids = [response.messages[0].id if response.messages else None for response in responses]
