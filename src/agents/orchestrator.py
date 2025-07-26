@@ -4,7 +4,7 @@ import asyncio
 
 from src.agents.offline_agent import generation_offline
 from src.agents.online_agent import generation_online
-genai.configure(api_key='AIzaSyB3y8k32Rjw2A-EGRAWve3ZQxLTY9FwEHc')
+from src.chat_app.dependency_setup import orch_model
 
 
 # Topics that should be handled by the offline RAG system.
@@ -29,9 +29,6 @@ async def agent_orchestrator(query: str):
     """
     print(f"\nProcessing query: '{query}'")
 
-    # Step 1: Asynchronously classify the query using an LLM
-    classifier_model = genai.GenerativeModel('gemini-1.5-flash')
-
     classification_prompt = f"""
     You are a topic router. Your job is to classify the user's query.
 
@@ -47,7 +44,7 @@ async def agent_orchestrator(query: str):
 
     try:
         # Use the async version of the generate_content method
-        response = await classifier_model.generate_content_async(classification_prompt)
+        response = await orch_model.generate_content_async(classification_prompt)
         classified_topic = response.text.strip()
         print(f"🧠 Classification result: {classified_topic}")
 
@@ -65,8 +62,6 @@ async def agent_orchestrator(query: str):
     except Exception as e:
         print(f"An error occurred: {e}")
         return "I'm sorry, I encountered an error and cannot process your request."
-
-
 
 
 # --- Example Usage with asyncio ---

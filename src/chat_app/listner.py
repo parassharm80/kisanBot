@@ -7,6 +7,7 @@ import json
 import asyncio
 from google.auth import default
 
+from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
 from src.services.user_flow.message_handle import handle_user_message
 import traceback
 
@@ -14,8 +15,13 @@ import traceback
 # This will hold the main event loop from the FastAPI app
 main_loop = None
 
-# Replace with the actual path to your service account key file
-# SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
+
+
+if os.environ.get("ENV") == "local":
+  SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
+  API_KEY = os.environ.get("API_KEY")
+
+
 consumer = None
 # credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 #
