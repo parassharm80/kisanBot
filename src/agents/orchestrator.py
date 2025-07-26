@@ -9,10 +9,7 @@ from src.chat_app.dependency_setup import orch_model
 
 # Topics that should be handled by the offline RAG system.
 OFFLINE_TOPICS = [
-    "Company HR Policy",
-    "Project Phoenix Documentation",
-    "Internal Team Structure",
-    "Q3 Financial Report"
+    "Nitrogen fertilizer",
 ]
 
 # A mapping to direct the classified topic to an async function.
@@ -71,7 +68,7 @@ async def agent_orchestrator(query: str):
 async def main():
     """Main async function to run the examples."""
     # Query that should go to the offline RAG system
-    offline_query = "What is the vacation policy mentioned in the Company HR Policy?"
+    offline_query = "nitrogen fertilizer doses?"
     offline_response = await agent_orchestrator(offline_query)
     print(f"✅ Final Answer: {offline_response}")
 
