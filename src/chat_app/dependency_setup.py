@@ -1,4 +1,5 @@
 from ..whatsapp.client import AsyncWhatsAppClient
+import os
 
 whatsapp_client = AsyncWhatsAppClient(
     phone_number_id='779353605250568',
@@ -11,14 +12,21 @@ from google.cloud import pubsub_v1
 from google.oauth2 import service_account
 
 # Replace with the actual path to your service account key file
-SERVICE_ACCOUNT_KEY_FILE = r"C:\Users\t-sharmara\kisanbot\serene-flare-466616-m5-bcb6c678bd2b.json"
-API_KEY = 'AIzaSyB3y8k32Rjw2A-EGRAWve3ZQxLTY9FwEHc'
 
 
+if os.environ.get("ENV") == "local":
+  SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
+  API_KEY = os.environ.get("API_KEY")
+ 
+
+################################
+
+  
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
-credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+# credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
-project_id = "serene-flare-466616-m5"
+
+# project_id = "serene-flare-466616-m5"
 topic_id = "bot_messages"
 # --- For Publisher ---
 publisher = pubsub_v1.PublisherClient(credentials=credentials)
