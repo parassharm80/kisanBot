@@ -3,6 +3,8 @@ from google.cloud import texttospeech_v1
 from google.oauth2 import service_account
 from typing import Optional
 from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
+import os
+from google import auth
 
 client = None
 async def async_text_to_speech(
@@ -13,7 +15,17 @@ async def async_text_to_speech(
     global client
     if not client:
         print("Initializing Text-to-Speech client...")
-        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+
+
+        if os.environ.get("ENV") == "local":
+            SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
+            API_KEY = os.environ.get("API_KEY")
+            credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+
+            project_id = os.environ.get("PROJECT_ID")
+
+        else:
+            credentials, project_id = auth.default()
         # global client
         client = texttospeech_v1.TextToSpeechAsyncClient(credentials=credentials)
 
