@@ -5,7 +5,6 @@ from google.oauth2 import service_account
 from src.models.bot.message_context import BotMessageContext
 import json
 import asyncio
-from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
 from src.services.user_flow.message_handle import handle_user_message
 import traceback
 import os

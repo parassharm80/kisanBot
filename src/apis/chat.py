@@ -3,9 +3,9 @@ import logging
 import json
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import JSONResponse
-from ..whatsapp.validate_message import validate_whatsapp_message
-from ..whatsapp.convert_message import convert_whatsapp_to_bot_message
-from ..chat_app.dependency_setup import publisher, topic_path, update_whatsapp
+from src.whatsapp.validate_message import validate_whatsapp_message
+from src.whatsapp.convert_message import convert_whatsapp_to_bot_message
+from src.chat_app.dependency_setup import publisher, topic_path, update_whatsapp
 from src.services.databases.user_collection import get_user_data
 
 

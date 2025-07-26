@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from ..message_context import WhatsappMessageReplyContext
+from src.whatsapp.message_context import WhatsappMessageReplyContext
 
 class Text(BaseModel):
     body: str = Field(..., description="The message body text")

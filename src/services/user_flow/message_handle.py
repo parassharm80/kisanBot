@@ -3,17 +3,17 @@ from src.services.text_to_speech import async_text_to_speech
 from src.services.speech_to_text import async_transcribe_ogg_bytes_gemini
 from src.services.image_to_text import async_generate_text_from_image
 from src.services.offline_flow import async_generate_offline
-from ...models.bot.message_context import (
+from src.models.bot.message_context import (
     BotMessageContext,
     MessageContext,
     ReplyContext,
     MediaContext,
     MessageTypes
 )
-from ...models.bot.user import User
-from ...utils import constants
-from ...utils import wa_utils as wa_utils
-from ...chat_app.dependency_setup import whatsapp_client
+from src.models.bot.user import User
+from src.utils import constants
+from src.utils import wa_utils as wa_utils
+from src.chat_app.dependency_setup import whatsapp_client
 
 language_dict = {
     "en-IN": "en",

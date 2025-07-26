@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from ..message_context import WhatsappMessageReplyContext
+from src.whatsapp.message_context import WhatsappMessageReplyContext
 
 class TemplateParameter(BaseModel):
     type: str = Field(..., description="Type of the parameter (e.g., 'text', 'image').")

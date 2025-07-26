@@ -1,15 +1,15 @@
 import json
 import uuid
-from ..whatsapp import incoming as incoming_message
+from src.whatsapp import incoming as incoming_message
 from typing import List
-from ..models.bot.message_context import (
+from src.models.bot.message_context import (
     BotMessageContext,
     MessageContext,
     ReplyContext,
     MediaContext
 )
-from ..models.bot.message_status import BotMessageStatus
-from ..models.bot.user import User
+from src.models.bot.message_status import BotMessageStatus
+from src.models.bot.user import User
 
 def convert_regular_message(original_message) -> BotMessageContext:
     bot_message_type = None

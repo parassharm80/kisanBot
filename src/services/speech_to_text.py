@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import google.generativeai as genai
 from google.cloud import speech
 from google.oauth2 import service_account
-from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE, speech_model
+from src.chat_app.dependency_setup import speech_model
 genai.configure(api_key='AIzaSyB3y8k32Rjw2A-EGRAWve3ZQxLTY9FwEHc')
 import os
 from google import auth

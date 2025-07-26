@@ -1,6 +1,6 @@
 import src.utils.constants as constants
 from typing import List, Dict, Any
-from ..models.bot.message_context import BotMessageContext
+from src.models.bot.message_context import BotMessageContext
 import src.whatsapp.request_payload as wa_req_payload
 from enum import Enum
 

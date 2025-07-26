@@ -1,9 +1,9 @@
 import uuid
 import logging
 import src.whatsapp.requests as wa_requests
-from ..whatsapp.requests import media_request as wa_media
-from ..models.bot.message_context import BotMessageContext
-from ..whatsapp.message_context import WhatsappMessageReplyContext
+from src.whatsapp.requests import media_request as wa_media
+from src.models.bot.message_context import BotMessageContext
+from src.whatsapp.message_context import WhatsappMessageReplyContext
 from enum import Enum
 
 

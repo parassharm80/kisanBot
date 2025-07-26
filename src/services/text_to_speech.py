@@ -2,7 +2,7 @@ import asyncio
 from google.cloud import texttospeech_v1
 from google.oauth2 import service_account
 from typing import Optional
-from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
+
 import os
 from google import auth
 

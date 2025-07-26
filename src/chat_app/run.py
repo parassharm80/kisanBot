@@ -6,13 +6,13 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-from ..apis.channel_register import register_apis_router
-from ..apis.health import health_apis_router
-from ..apis.chat import chat_apis_router
-from ..chat_app.dependency_setup import whatsapp_client, db
 
-# ✨ FIX: Import the listener module with an alias for clarity
-from . import listner as pubsub_listener
+from src.apis.channel_register import register_apis_router
+from src.apis.health import health_apis_router
+from src.apis.chat import chat_apis_router
+from src.chat_app.dependency_setup import whatsapp_client, db
+from src.chat_app import listner as pubsub_listener
+
 
 # This global is not strictly necessary anymore but doesn't hurt
 subscriber_task = None
@@ -60,9 +60,9 @@ async def lifespan(app: FastAPI):
 
 app = create_app()
 
-if __name__ == '__main__':
+if __name__ == '__main__' and os.environ.get('ENV') == 'local':
     uvicorn.run(
         app,
         host="127.0.0.1",
-        port=4000
+        port=8080
     )

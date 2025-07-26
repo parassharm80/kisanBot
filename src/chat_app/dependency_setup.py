@@ -1,4 +1,4 @@
-from ..whatsapp.client import AsyncWhatsAppClient
+from src.whatsapp.client import AsyncWhatsAppClient
 import os
 from google import auth
 from dotenv import load_dotenv
@@ -6,7 +6,7 @@ from google.cloud import firestore
 
 # load environment variables from .env file
 current_dir = os.path.dirname(os.path.abspath(__file__))
-environment_path = os.path.join(current_dir, '..', 'keys.env')
+environment_path = os.path.join(current_dir, 'keys.env')
 environment_path = os.path.normpath(environment_path)
 print(f"Loading environment variables from: {environment_path}")
 if os.path.exists(environment_path):

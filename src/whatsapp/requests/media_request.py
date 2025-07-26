@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from enum import Enum
-from ..message_context import WhatsappMessageReplyContext
+from src.whatsapp.message_context import WhatsappMessageReplyContext
 
 class WhatsAppMediaTypes(Enum):
     AUDIO = "audio"

@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from ..models.response import ResponseModel
+from src.models.response import ResponseModel
 
 REGISTER_API_NAME = 'register_api'
 
