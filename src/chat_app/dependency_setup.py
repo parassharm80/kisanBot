@@ -2,6 +2,7 @@ from ..whatsapp.client import AsyncWhatsAppClient
 import os
 from google import auth
 from dotenv import load_dotenv
+from google.cloud import firestore
 
 # load environment variables from .env file
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -38,11 +39,13 @@ API_KEY = os.environ.get("API_KEY", "")
 if os.environ.get("ENV") == "local":
     SERVICE_ACCOUNT_KEY_FILE = os.environ.get("SERVICE_ACCOUNT_KEY_FILE")
     credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
+    db = firestore.AsyncClient.from_service_account_json(SERVICE_ACCOUNT_KEY_FILE)
 
     project_id = os.environ.get("PROJECT_ID")
 
 else:
     credentials, project_id = auth.default()
+    db = firestore.AsyncClient()
 
 
 # Replace with the actual path to your service account key file
@@ -70,7 +73,5 @@ online_model = genai.Client(api_key=API_KEY)
 offline_model = genai.Client(api_key=API_KEY)
 
 # Document db firestore
-from google.cloud import firestore
-db = firestore.AsyncClient.from_service_account_json(SERVICE_ACCOUNT_KEY_FILE)
 message_collection = db.collection('messages')
 
