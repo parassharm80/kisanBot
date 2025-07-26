@@ -2,6 +2,7 @@ import asyncio
 from google.cloud import texttospeech_v1
 from google.oauth2 import service_account
 from typing import Optional
+from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
 
 client = None
 async def async_text_to_speech(
@@ -12,8 +13,7 @@ async def async_text_to_speech(
     global client
     if not client:
         print("Initializing Text-to-Speech client...")
-        credentials_path = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
-        credentials = service_account.Credentials.from_service_account_file(credentials_path)
+        credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
         # global client
         client = texttospeech_v1.TextToSpeechAsyncClient(credentials=credentials)
 

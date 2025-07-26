@@ -6,6 +6,7 @@ from .user import User
 class MessageTypes(Enum):
     REGULAR_TEXT = "regular_text"
     REGULAR_AUDIO = "regular_audio"
+    REGULAR_IMAGE = "regular_image"
     TEMPLATE_BUTTON = "template_button"                                   
     INTERACTIVE_BUTTON = "interactive_button_reply"
     INTERACTIVE_LIST = "interactive_list_reply"

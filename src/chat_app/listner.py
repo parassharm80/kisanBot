@@ -5,16 +5,13 @@ from google.oauth2 import service_account
 from src.models.bot.message_context import BotMessageContext
 import json
 import asyncio
-
+from src.chat_app.dependency_setup import SERVICE_ACCOUNT_KEY_FILE
 from src.services.user_flow.message_handle import handle_user_message
 import traceback
 
 
 # This will hold the main event loop from the FastAPI app
 main_loop = None
-
-# Replace with the actual path to your service account key file
-SERVICE_ACCOUNT_KEY_FILE = "/Users/parassharma/Downloads/serene-flare-466616-m5-ced346076763.json"
 consumer = None
 credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_KEY_FILE)
 
