@@ -10,32 +10,28 @@ idk = {
     "hi": "मुझे खेद है, मुझे नहीं पता",
     "kn": "ಕ್ಷಮಿಸಿ, ನನಗೆ ಗೊತ್ತಿಲ್ಲ",
 }
-def generate_prompt(language_code: str, src_text: str = None) -> str:
+def generate_prompt(language_code: str, user_query: str = None, answer: str = None) -> str:
     instructions = f"""
-    You are Kisan Bot. Answer the following query <query>{src_text}</query> in user language code {language_code} and English. Use **farmer-friendly language**, keeping technical jargon to a minimum. Keep the length of each response under 30 words."""
-    # instructions = f"""
-    # You are Kisan Bot – an AI-powered personal farming assistant designed to support small-scale farmers in India, especially in rural areas.
-
-    # Your role is to:
-    # 1. Understand query given as english text.
-    # 2. Identify the user’s intent
-    # 3. Respond in user language code {language_code}. Translate the response to English using **farmer-friendly language**, keeping technical jargon to a minimum. Keep the length of each response under 30 words.
-
-    # Always speak like a friendly local expert who deeply cares about the farmer’s success.
-
-    # """
+    <instructions>
+    Given the user query and answer in English, user query <query>{user_query}</query> and answer <answer>{answer}</answer>, your role is to. Generate 3 follow-up questions in user language code <lang>{language_code}</lang> that they can ask. Length of each question should be less than 20 words and should be **COMPLETE** and **SELF-CONTAINED**.
+    </instructions>
+    """
     output_structure = f"""
     Follow below xml tagging for response. All tags as it is:
     <OUTPUT_STRUCTURE>
-    <ans_en>Response in English</ans_en>
-    <ans_src>Response in {language_code}</ans_src>
+    <follow_up_questions>
+        <q1>Follow-up question 1 in {language_code}</q1>
+        <q2>Follow-up question 2 in {language_code}</q2>
+        <q3>Follow-up question 3 in {language_code}</q3>
+    </follow_up_questions>
     </OUTPUT_STRUCTURE>
     <instruction>
     """
     return "\n".join([instructions, output_structure])
 
-async def async_generate_online(
-    src_text: str,
+async def async_generate_related(
+    user_query: str,
+    answer: str,
     language_code: str
 ) -> str:
     def parse_xml(xml_string):
@@ -50,24 +46,25 @@ async def async_generate_online(
 
             root = ET.fromstring(xml_string)
 
-            # Extract values
-            text_en = root.findtext("ans_en", default="").strip()
-            text_src = root.findtext("ans_src", default="").strip()
+            # Extract follow-up questions
+            questions = []
+            follow_up = root.find("follow_up_questions")
+            if follow_up is not None:
+                for q in follow_up:
+                    if q.text:
+                        questions.append(q.text.strip())
 
-            return text_en, text_src
+            return questions
 
         except ET.ParseError as e:
             print("XML Parse Error:", e)
             return None
 
-    prompt = generate_prompt(language_code, src_text)
-    # print(f"Generated prompt: {prompt}")
+    prompt = generate_prompt(language_code, user_query, answer)
+    print(f"Generated prompt: {prompt}")
 
-    grounding_tool = types.Tool(
-        google_search=types.GoogleSearch()
-    )
+    # Configure generation settings
     config = types.GenerateContentConfig(
-        tools=[grounding_tool],
         temperature= 0.0
     )
 
@@ -78,8 +75,8 @@ async def async_generate_online(
         config=config
     )
     print(response.text)
-    text_en, text_src = parse_xml(response.text)
+    questions = parse_xml(response.text)
     # if category == "unknown":
     #     text_en = idk['en']
     #     text_src = idk[language_code]
-    return text_en, text_src
+    return questions
