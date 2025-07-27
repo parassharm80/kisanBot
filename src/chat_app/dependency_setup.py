@@ -65,8 +65,6 @@ else:
     db = firestore.AsyncClient()
 
 
-# Replace with the actual path to your service account key file
-
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
 
 topic_id = "bot_messages"
