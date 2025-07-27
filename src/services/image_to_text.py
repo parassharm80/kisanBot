@@ -27,14 +27,16 @@ def generate_prompt(language_code: str, src_text: str = None) -> str:
         2. If it is:
         - Describe the image.
         - Determine the state of the crop (e.g., healthy, diseased, dry, etc.).
-        - Keep the description within 30 words.
+        - Generate a suitable answer like if it is diseased, then suggest remedies.
+        - STRICT Keep the answer within 30 words.
         """.strip()
     else:
         crop_instructions = f"""
         2. If it is:
         - Describe the image and determine the crop state.
         - Use the following user input in {language_code}: "{src_text}"
-        - Generate a suitable answer considering the image and input context.
+        - Generate a suitable answer for user considering the image and context. Like if it is diseased, then suggest remedies.
+        - STRICT Keep the answer within 30 words.
         """.strip()
 
     prompt = "\n".join([common_instructions, crop_instructions, non_crop_instruction, output_structure])

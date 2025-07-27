@@ -97,8 +97,8 @@ async def async_transcribe_ogg_bytes_gemini(audio_bytes: bytes, language_code: s
     
     prompt = f"""
     <instructions>
-    User might have asked this audio question in given source language code {language_code}. If it is not in it identify the language and generate a transcript of the speech in english as well as source language code {language_code}.
-    Give the answer in English and the given source language code Follow below xml tagging response:
+    You are a transciber. Transcribe the audio in ogg format to user language code {language_code} text and English text. 
+    Follow below xml tagging for response. All tags as it is:
     <OUTPUT_STRUCTURE>
     <transcript_en>Response in English</transcript_en>
     <transcript_src>Response in {language_code}</transcript_src>
