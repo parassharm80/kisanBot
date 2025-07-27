@@ -42,19 +42,14 @@ Follow these steps to get your development environment set up.
 
 4.  **Set Up Your API Key**
     Create an environment variable for your Google AI API key. Replace `"YOUR_API_KEY_HERE"` with your actual key.
-
-    * On **macOS/Linux**:
-        ```bash
-        export GOOGLE_API_KEY="YOUR_API_KEY_HERE"
-        ```
-    * On **Windows (Command Prompt)**:
-        ```bash
-        set GOOGLE_API_KEY="YOUR_API_KEY_HERE"
-        ```
-    * On **Windows (PowerShell)**:
-        ```bash
-        $env:GOOGLE_API_KEY="YOUR_API_KEY_HERE"
-        ```
+    ```bash
+        # Whatsapp
+        WHATSAPP_AUTH_TOKEN=<auth_token>
+        ENV=local
+        SERVICE_ACCOUNT_KEY_FILE=<path to google json credential>
+        API_KEY=<google api key>
+        PROJECT_ID=<project_id>
+    ``` 
     > **Note:** This environment variable is only set for the current terminal session. For a permanent solution, add it to your shell's profile file (e.g., `.zshrc`, `.bash_profile`) or your system's environment variables on Windows.
 
 ## ▶️ How to Run
@@ -62,4 +57,4 @@ Follow these steps to get your development environment set up.
 Once the setup is complete, you can run the application's test cases from the root directory:
 
 ```bash
-python main.py
+python -m src.chat_app.run
