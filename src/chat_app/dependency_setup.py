@@ -65,7 +65,6 @@ else:
     db = firestore.AsyncClient()
 
 
-
 # projects/serene-flare-466616-m5/subscriptions/bot_messages-sub
 
 topic_id = "bot_messages"
