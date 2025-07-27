@@ -4,6 +4,8 @@ import PyPDF2
 import requests
 import faiss
 import numpy as np
+import asyncio
+
 
 # CORRECT: Import the necessary classes from the Vertex AI SDK
 from google.cloud import aiplatform
@@ -138,12 +140,14 @@ class RagPipeline:
         return response.text
 
 
-def main():
-    """Main function to run the RAG pipeline."""
-    initialize_vertex_ai()
+# ...existing code...
 
-    pdf_url = "https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/nov/doc2021112361.pdf"
-    pdf_path = "pm_kisan.pdf"
+def run_rag_pipeline(pdf_url: str, questions: list, pdf_path: str = "pm_kisan.pdf") -> dict:
+    """
+    Runs the RAG pipeline for a given PDF and list of questions.
+    Returns a dictionary mapping each question to its answer.
+    """
+    initialize_vertex_ai()
 
     # 1. Ingest and process the document
     download_pdf(pdf_url, pdf_path)
@@ -157,21 +161,31 @@ def main():
     # 3. Initialize the RAG pipeline
     rag_pipeline = RagPipeline(index, chunks)
 
-    # 4. Ask questions
-    question_1 = "What is the PM-KISAN scheme?"
-    answer_1 = rag_pipeline.answer_question(question_1)
-    print(f"\n💡 Answer 1:\n{answer_1}")
+    # 4. Ask questions and collect answers
+    answers = {}
+    for question in questions:
+        answer = rag_pipeline.answer_question(question)
+        answers[question] = answer
 
-    question_2 = "What is the total financial outlay for the scheme?"
-    answer_2 = rag_pipeline.answer_question(question_2)
-    print(f"\n💡 Answer 2:\n{answer_2}")
-
-
-if __name__ == "__main__":
-    main()
+    return answers
 
 
 
+async def generation_offline(query: str) -> str:
+    """
+    Async wrapper for offline RAG generation.
+    Downloads and processes the default PDF, then answers the query.
+    """
+    pdf_url = "https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/nov/doc2021112361.pdf"
+    questions = [query]
+    loop = asyncio.get_event_loop()
+    # Run the sync RAG pipeline in a thread to avoid blocking
+    answers = await loop.run_in_executor(None, run_rag_pipeline, pdf_url, questions)
+    return answers[query]
+# No code should run on import. Call run_rag_pipeline from your orchestrator.
+# Example usage from orchestrator:
+# from agents.offline_agent import run_rag_pipeline
+# answers = run_rag_pipeline(pdf_url, ["What is the PM-KISAN scheme?", ...])
 
 
 # import os
